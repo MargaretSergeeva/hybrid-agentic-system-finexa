@@ -1,0 +1,148 @@
+// Finexa Project: Custom AI Architecture Database Schema (Updated)
+
+Table merchants [note: "Reference: Merchant accounts & billing details", color: #2c3e50] {
+  merchant_id varchar [pk]
+  account_tier account_tier_enum [not null]
+  plan_type varchar
+  created_at timestamp
+}
+
+Table feature_area_taxonomy [note: "Reference: Product feature mapping & risk categorization", color: #2c3e50] {
+  feature_area varchar [pk]
+  product_area_tag varchar [not null]
+  operational_risk_tier varchar [not null]
+  compliance_sensitive boolean [not null, default: false]
+  compliance_notes text
+}
+
+Table opportunities [note: "Core Layer: Canonical business opportunities & issues", color: #e67e22] {
+  opportunity_id varchar [pk]
+  theme varchar [not null]
+  workflow varchar [not null]
+  feature_area varchar [ref: > feature_area_taxonomy.feature_area]
+  
+  // Deterministic priority inputs (arithmetic formula)
+  customer_value_score float
+  urgency_score float
+  strategic_alignment_score float
+  operational_risk_score float
+  compliance_sensitivity_score float
+  priority_score float                    // weighted sum of the five inputs
+  priority_explanation text
+  priority_weights_version varchar        // e.g. "v1.2" – allows re-calculation & audit
+  
+  approved_for_drafting boolean
+  status opportunity_status_enum [not null]
+  regression_flag boolean
+  last_insight_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table raw_feedback [note: "Ingest Layer: De-identified user feedback via DLP scrubbing", color: #3498db] {
+  raw_feedback_id varchar [pk]
+  source_type source_type_enum [not null]
+  merchant_id varchar [not null, ref: > merchants.merchant_id]
+  raw_text text [not null]
+  
+  // DLP audit columns
+  dlp_job_id varchar
+  scrubbed_at timestamp
+  pii_types_found text[]                  // e.g. ["EMAIL", "PHONE", "IBAN"]
+  
+  created_at timestamp
+}
+
+Table processed_insights [note: "Structuring Layer: LLM parsed, tagged & embedded atomic insights", color: #9b59b6] {
+  insight_id varchar [pk]
+  source_id varchar [not null, ref: > raw_feedback.raw_feedback_id]
+  summary text [not null]
+  pain_points text
+  root_cause text
+  product_area_tag varchar
+  suggested_theme varchar
+  embedding vector
+  severity severity_enum
+  segment varchar
+  account_tier account_tier_enum [not null]
+  opportunity_id varchar [ref: > opportunities.opportunity_id, note: "Linked dynamically at Gate 1"]
+  status insight_status_enum [not null]
+  human_confirmed_at timestamp
+  confirmed_by_role varchar               // role-only (e.g. "Payment_PM") – never individual ID
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table candidate_shortlist [note: "Matching Layer: AI-generated vector search recommendations", color: #1abc9c] {
+  shortlist_id varchar [pk]
+  insight_id varchar [not null, ref: > processed_insights.insight_id]
+  matched_opportunity_id varchar [ref: > opportunities.opportunity_id]
+  similarity_score float [not null]
+  rank integer [not null]
+  llm_match_reason text
+  created_at timestamp
+}
+
+Table logged_feedback_pending [note: "Staging Layer: Temporary buffer queue awaiting Gate 1 validation", color: #f1c40f] {
+  pending_id varchar [pk]
+  insight_id varchar [not null, ref: > processed_insights.insight_id]
+  proposed_theme varchar
+  proposed_segment varchar
+  proposed_workflow varchar
+  proposed_severity severity_enum
+  proposed_feature_area varchar [ref: > feature_area_taxonomy.feature_area]
+  account_tier account_tier_enum [not null]
+  status pending_status_enum [not null]
+  created_at timestamp
+}
+
+Table jira_tickets [note: "Delivery Layer: Generated payloads integrated with Jira", color: #2ecc71] {
+  ticket_id varchar [pk]
+  opportunity_id varchar [not null, ref: > opportunities.opportunity_id]
+  problem_statement text [not null]
+  user_story text [not null]
+  acceptance_criteria text [not null]
+  complexity_estimate integer
+  status jira_ticket_status_enum [not null]   // includes PENDING, PENDING_SYNC, SYNCED, etc.
+  jira_ticket_key varchar
+  current_jira_status varchar
+  fix_version_released_at timestamp
+  last_synced_at timestamp
+  created_at timestamp
+}
+
+Table jira_status_log [note: "Delivery Layer: Historical log of downstream Jira updates", color: #2ecc71] {
+  sync_id varchar [pk]
+  ticket_id varchar [not null, ref: > jira_tickets.ticket_id]
+  jira_status varchar [not null]
+  synced_at timestamp
+}
+
+Table gate_decisions [note: "Audit Layer: Human-in-the-loop tracking for RACI accountability", color: #e74c3c] {
+  decision_id varchar [pk]
+  opportunity_id varchar [ref: > opportunities.opportunity_id]
+  insight_id varchar [ref: > processed_insights.insight_id]
+  gate gate_enum [not null]
+  action gate_action_enum [not null]
+  reviewer_role varchar [not null]        // role-only (e.g. "Payment_PM")
+  
+  ai_proposed_value jsonb                 // structured: {"field": "...", "value": "...", ...}
+  pm_final_value jsonb                    // structured: same shape
+  
+  timestamp timestamp
+}
+
+Table ai_run_metrics [note: "AI System Analytics: latency, cost & token tracking", color: #8e44ad] {
+  run_id varchar [pk]
+  insight_id varchar [ref: > processed_insights.insight_id]
+  opportunity_id varchar [ref: > opportunities.opportunity_id]
+  command_name varchar                    // e.g. "/process-feedback", "/draft-user-story"
+  tokens_in integer
+  tokens_out integer
+  latency_ms integer
+  cost_usd decimal
+  model_version varchar
+  created_at timestamp
+}
+
+Ref: "processed_insights"."summary" ?<> "logged_feedback_pending"."proposed_theme"
