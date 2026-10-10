@@ -43,12 +43,12 @@ Leadership asked for a controlled pilot to move to evidence-based delivery plann
 
 | Document (PDF) | Interactive view |
 |---|---|
-| [Full documentation: From Customer Voice to Delivery Execution](docs/From_Customer_Voice_to_Delivery_Execution.pdf) | [Live demo](https://margaretsergeeva.github.io/Finexa_Demo/) |
-| [1. Pilot Project Brief](docs/01_Pilot_Project_Brief.pdf) | [Project roadmap](https://margaretsergeeva.github.io/Finexa-RoadMap/) |
-| [2. Stakeholder Map & RACI](docs/02_Stakeholder_Map_and_RACI.pdf) | [Stakeholders](https://margaretsergeeva.github.io/Finexa_Stakeholders/) |
-| [3. Risk Mitigation Analysis](docs/03_Risk_Mitigation_Analysis.pdf) | [Risks hub](https://margaretsergeeva.github.io/Finexa_Risks_Hub/) |
-| [4. Monitoring Plan](docs/04_Monitoring_Plan.pdf) | [Analytics](https://margaretsergeeva.github.io/Finexa_Analytics/) |
-| [Database schema (DBML, 11 tables)](docs/finexa-feedback-schema.dbml) | [dbdiagram.io](https://dbdiagram.io/d/Finexa-Feedback-6a77a4a7829f06bdc8af307b) |
+| [Full documentation: From Customer Voice to Delivery Execution](https://github.com/MargaretSergeeva/hybrid-agentic-system-finexa/blob/main/docs/From_Customer_Voice_to_Delivery_Execution.pdf) | [Live demo](https://margaretsergeeva.github.io/Finexa_Demo/) |
+| [1. Pilot Project Brief](https://github.com/MargaretSergeeva/hybrid-agentic-system-finexa/blob/main/docs/01_Pilot_Project_Brief.pdf) | [Project roadmap](https://margaretsergeeva.github.io/Finexa_Demo/roadmap/) |
+| [2. Stakeholder Map & RACI](https://github.com/MargaretSergeeva/hybrid-agentic-system-finexa/blob/main/docs/02_Stakeholder_Map_and_RACI.pdf) | [Stakeholders](https://margaretsergeeva.github.io/Finexa_Demo/stakeholders/) |
+| [3. Risk Mitigation Analysis](https://github.com/MargaretSergeeva/hybrid-agentic-system-finexa/blob/main/docs/03_Risk_Mitigation_Analysis.pdf) | [Risks hub](https://margaretsergeeva.github.io/Finexa_Demo/risks-hub/) |
+| [4. Monitoring Plan](https://github.com/MargaretSergeeva/hybrid-agentic-system-finexa/blob/main/docs/04_Monitoring_Plan.pdf) | [Analytics](https://margaretsergeeva.github.io/Finexa_Demo/analytics/) |
+| [Database schema (DBML, 11 tables)](https://github.com/MargaretSergeeva/hybrid-agentic-system-finexa/blob/main/docs/finexa-feedback-schema.dbml) | [dbdiagram.io](https://dbdiagram.io/d/Finexa-Feedback-6a77a4a7829f06bdc8af307b) |
 
 ## Author
 
