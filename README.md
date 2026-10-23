@@ -31,7 +31,7 @@ Leadership asked for a controlled pilot to move to evidence-based delivery plann
 
 ## Outcome
 
-- **Winner of the THRIVE capstone competition** among 150 projects.
+- **One of 20 THRIVE capstone winners** among 150 participants.
 - **Measurable targets:** ≥85% tag alignment, >80% RAG hit rate, >85% Gate 3 acceptance and >50% less time spent on feedback management.
 - **A complete delivery package:** Project Brief, Stakeholder Map & RACI, Risk Mitigation Analysis and Monitoring Plan, plus an interactive prototype of the pipeline, the gates and the monitoring portal.
 
